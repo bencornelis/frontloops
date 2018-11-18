@@ -5,7 +5,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <CodeForm cellCount={4}/>
+        <CodeForm code='137-454-982-1-3' />
       </div>
     );
   }

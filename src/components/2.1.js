@@ -1,9 +1,24 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
+const sumBefore = (arr, i) => {
+  return arr.slice(0, i).reduce((sum, v) => sum + v, 0);
+}
+
+const sameValues = (arr1, arr2) => {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 const Container = styled.div`
-  width: 600px;
-  height: 200px;
   border-radius: 3px;
   border: 2px solid light grey;
 `;
@@ -20,26 +35,57 @@ const Input = styled.input`
 
 const Cell = styled.li`
   display: inline-block;
-  border: 2px solid lightgrey;
-  &:not(:first-child) {
-    border-left: 0;
-  }
+
+  ${props => props.bordered && `
+    border: 2px solid ${props.borderColor};
+    &:not(:first-child) {
+      border-left: 0;
+    }
+  `}
+
+  ${props => props.margin && `
+    margin-left: 20px;
+    margin-right: 20px;
+  `}
+`;
+
+const Dash = styled.div`
+  width: 20px;
+  height: 0px;
+  border: 1px solid lightgrey;
 `;
 
 const CellList = styled.ul`
+  display: inline-block;
   list-style-type: none;
+  padding: 0;
 `;
 
 class CodeForm extends Component {
   constructor(props) {
     super(props);
 
-    const { cellCount } = props;
+    const { code } = props;
+    const codeGroups = (
+      code.split('-')
+          .map(group =>
+            group
+              .split('')
+              .map(x => parseInt(x))
+          )
+    );
+    const codeValues = codeGroups.reduce((acc, group) => acc.concat(group), []);
+
+    const cellGroupCounts = codeGroups.map(group => group.length);
+    const cellCount = cellGroupCounts.reduce((total, count) => total + count, 0);
+
     this.state = {
       isFocused: null,
       values: Array(cellCount).fill(''),
     };
 
+    this.codeValues = codeValues;
+    this.cellGroupCounts = cellGroupCounts;
     this.cellCount = cellCount;
     this.cellRefs = Array(cellCount).fill();
   }
@@ -91,24 +137,49 @@ class CodeForm extends Component {
   }
 
   render() {
+    let borderColor;
+    const { values } = this.state;
+    const isComplete = values.every(value => value !== '');
+    console.log(values, this.codeValues)
+    const isUnlocked = sameValues(values, this.codeValues);
+    if (isComplete && isUnlocked) {
+      borderColor = 'green';
+    } else if (isComplete) {
+      borderColor = 'red';
+    } else {
+      borderColor = 'lightgrey';
+    }
+
     return (
       <Container onClick={this.focusCells}>
-        <CellList>
-          {Array(this.cellCount).fill().map((_, idx) => {
-            return (
-              <Cell key={idx}>
-                <Input
-                  value={this.state.values[idx]}
-                  ref={el => { this.cellRefs[idx] = el; }}
-                  onKeyDown={this.handleKeyDown(idx)}
-                  onMouseDown={e => { e.preventDefault(); }}
-                  minLength='1'
-                  maxLength='1'
-                  />
-              </Cell>
-            );
-          })}
-        </CellList>
+        {this.cellGroupCounts.map((cellGroupCount, i) => {
+          const cellsBefore = sumBefore(this.cellGroupCounts, i);
+          const isLastGroup = i === this.cellGroupCounts.length - 1;
+          return (
+            <CellList>
+              {Array(cellGroupCount).fill().map((_, j) => {
+                const idx = cellsBefore + j;
+                return (
+                  <Cell key={idx} bordered borderColor={borderColor}>
+                    <Input
+                      value={values[idx]}
+                      ref={el => { this.cellRefs[idx] = el; }}
+                      onKeyDown={this.handleKeyDown(idx)}
+                      onMouseDown={e => { e.preventDefault(); }}
+                      minLength='1'
+                      maxLength='1'
+                      />
+                  </Cell>
+                );
+              })}
+              {!isLastGroup && (
+                <Cell margin>
+                  <Dash />
+                </Cell>
+              )}
+            </CellList>
+          );
+        })}
       </Container>
     )
   }
