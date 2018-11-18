@@ -140,7 +140,6 @@ class CodeForm extends Component {
     let borderColor;
     const { values } = this.state;
     const isComplete = values.every(value => value !== '');
-    console.log(values, this.codeValues)
     const isUnlocked = sameValues(values, this.codeValues);
     if (isComplete && isUnlocked) {
       borderColor = 'green';
