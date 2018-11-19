@@ -100,7 +100,7 @@ class CodeForm extends Component {
   handleKeyDown = idx => e => {
     const isComplete = (
       idx === this.cellCount - 1 &&
-      !!this.state.values[this.cellCount - 1]
+      this.state.values[this.cellCount - 1] !== ''
     );
 
     if (e.keyCode === 8) { // delete
