@@ -1,18 +1,11 @@
 import React, { Component } from 'react';
-import List from './components/2.2';
+import Timer from './components/2.6';
 
 class App extends Component {
   render() {
     return (
       <div>
-        <List
-          items={[
-            'Ice-cream',
-            'Hot-dog',
-            'Popcorn',
-            'Cookie'
-          ]}
-        />
+        <Timer />
       </div>
     );
   }
