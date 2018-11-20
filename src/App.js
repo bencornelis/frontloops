@@ -20,7 +20,8 @@ class App extends Component {
             {
               label: 'password',
               type: 'password',
-              isRequired: true
+              isRequired: true,
+              validate: password => password.length >= 5,
             }
           ]}
           onSubmit={entries => { console.log(entries); }}

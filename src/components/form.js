@@ -6,19 +6,30 @@ const Input = styled.input`
   border-right: none;
   border-left: none;
   border-bottom: 2px solid lightgrey;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  font-size: 14px;
   &:focus {
     border-bottom: 2px solid black;
+    outline: none;
   }
 `;
 
 const Label = styled.label`
+  display: block;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const Error = styled.div`
   color: red;
 `;
 
-const FormItemWrapper = styled.div``;
+const FormItemWrapper = styled.div`
+  width: 100%;
+`;
 
 const FormItem = ({
   label,
@@ -29,15 +40,39 @@ const FormItem = ({
 }) => {
   return (
     <FormItemWrapper>
-      <Label>{label.toUpperCase()}</Label>
-      <Input type={type} value={value} onChange={onChange}/>
+      <Label htmlFor={label}>{label.toUpperCase()}</Label>
+      <Input id={label} type={type} value={value} onChange={onChange}/>
       {errorMessage && <Error>{errorMessage}</Error>}
     </FormItemWrapper>
   );
 }
 
-const Button = styled.button``;
-const Form = styled.form``;
+const Button = styled.button`
+  height: 30px;
+  width: 90px;
+  border: none;
+  border-radius: 1px;
+  background: lightgrey;
+  &:hover {
+    cursor: pointer;
+    background: grey;
+  }
+  &:focus {
+    outline: none;
+  }
+`;
+
+const Form = styled.form`
+  width: 30vw;
+  height: 30vw;
+  padding 30px;
+  border: 1px solid lightgrey;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-start;
+`;
 
 class CustomForm extends Component {
   constructor(props) {
@@ -49,7 +84,7 @@ class CustomForm extends Component {
         type = 'text',
         value = '',
         isRequired = false,
-        validate = _ => true
+        validate = _ => true,
       } = field;
 
       return {
