@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import Timer from './components/2.6';
+import TimerApp from './components/2.6';
 
 class App extends Component {
   render() {
     return (
       <div>
-        <Timer />
+        <TimerApp />
       </div>
     );
   }
