@@ -1,11 +1,30 @@
 import React, { Component } from 'react';
-import TimerApp from './components/2.6';
+import CustomForm from './components/form';
 
 class App extends Component {
   render() {
     return (
       <div>
-        <TimerApp />
+        <CustomForm
+          fields={[
+            {
+              label: 'name',
+              type: 'text',
+            },
+            {
+              label: 'email',
+              type: 'text',
+              isRequired: true,
+              validate: email => email.includes('@')
+            },
+            {
+              label: 'password',
+              type: 'password',
+              isRequired: true
+            }
+          ]}
+          onSubmit={entries => { console.log(entries); }}
+        />
       </div>
     );
   }
