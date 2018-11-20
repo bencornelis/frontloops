@@ -26,13 +26,12 @@ const FormItem = ({
   value,
   onChange,
   errorMessage,
-  showError,
 }) => {
   return (
     <FormItemWrapper>
       <Label>{label.toUpperCase()}</Label>
       <Input type={type} value={value} onChange={onChange}/>
-      {showError && errorMessage && <Error>{errorMessage}</Error>}
+      {errorMessage && <Error>{errorMessage}</Error>}
     </FormItemWrapper>
   );
 }
@@ -63,10 +62,7 @@ class CustomForm extends Component {
       };
     })
 
-    this.state = {
-      fields,
-      showErrors: false,
-    };
+    this.state = { fields };
   }
 
   handleFieldChange = idx => e => {
@@ -112,15 +108,13 @@ class CustomForm extends Component {
         if (allCorrect) {
           const entries = fields.map(({ label, value }) => ({ [label]: value }));
           this.props.onSubmit(entries);
-        } else {
-          this.setState({ showErrors: true });
         }
       }
     )
   }
 
   render() {
-    const { fields, showErrors } = this.state;
+    const { fields } = this.state;
     return (
       <Form>
         {fields.map(({ label, type, value, errorMessage }, idx) => (
@@ -130,7 +124,6 @@ class CustomForm extends Component {
             type={type}
             value={value}
             errorMessage={errorMessage}
-            showError={showErrors}
             onChange={this.handleFieldChange(idx)}
           />
         ))}
