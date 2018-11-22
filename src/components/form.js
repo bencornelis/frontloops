@@ -64,7 +64,6 @@ const Button = styled.button`
 
 const Form = styled.form`
   width: 30vw;
-  height: 30vw;
   padding 30px;
   border: 1px solid lightgrey;
   border-radius: 2px;
