@@ -78,23 +78,32 @@ class CustomForm extends Component {
   constructor(props) {
     super(props);
 
-    const fields = props.fields.map(field => {
+    const fields = props.fields.flatMap(_field => {
       const {
         label,
         type = 'text',
         value = '',
-        isRequired = false,
+        required = false,
+        confirmation = false,
         validate = _ => true,
-      } = field;
+      } = _field;
 
-      return {
+      const field = {
         label,
         type,
         value,
-        isRequired,
+        required,
         validate,
         errorMessage: '',
-      };
+        confirmation: false,
+      }
+
+      return (
+        confirmation ?
+          [ field, { ...field, confirmation: true, label: `Confirm ${label}` }]
+          :
+          [ field ]
+      );
     })
 
     this.state = { fields };
@@ -118,16 +127,19 @@ class CustomForm extends Component {
 
     this.setState(
       ({ fields }) => {
-        fields = fields.map(field => {
+        fields = fields.map((field, idx) => {
+          const { label, value, required, validate, confirmation } = field;
           let errorMessage;
-          const { label, value, isRequired, validate } = field;
-          if (isRequired && value === '') {
+          if (required && value === '') {
             errorMessage = 'Field is required';
-          } else if (!validate(value)) {
+          } else if (!validate(value) && !confirmation) {
             errorMessage = `Enter a valid ${label}`;
+          } else if (confirmation && value !== fields[idx-1].value) {
+            errorMessage = 'Confirmation failed';
           } else {
             errorMessage = '';
           }
+
           return {
             ...field,
             value,
@@ -141,11 +153,15 @@ class CustomForm extends Component {
         const { fields } = this.state;
         const allCorrect = fields.every(({ errorMessage }) => errorMessage === '');
         if (allCorrect) {
-          const entries = fields.map(({ label, value }) => ({ [label]: value }));
+          const entries = (
+            fields
+              .filter(({ confirmation }) => !confirmation)
+              .map(({ label, value }) => ({ [label]: value }))
+          );
           this.props.onSubmit(entries);
         }
       }
-    )
+    );
   }
 
   render() {

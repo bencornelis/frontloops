@@ -14,13 +14,14 @@ class App extends Component {
             {
               label: 'email',
               type: 'text',
-              isRequired: true,
+              required: true,
               validate: email => email.includes('@')
             },
             {
               label: 'password',
               type: 'password',
-              isRequired: true,
+              required: true,
+              confirmation: true,
               validate: password => password.length >= 5,
             }
           ]}
