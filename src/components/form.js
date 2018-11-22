@@ -129,7 +129,7 @@ class CustomForm extends Component {
         fields = fields.map((field, idx) => {
           const { label, value, required, validate, confirmation } = field;
           let errorMessage;
-          if (required && value === '') {
+          if (required && value === '' && !confirmation) {
             errorMessage = 'Field is required';
           } else if (!validate(value) && !confirmation) {
             errorMessage = `Enter a valid ${label}`;
